@@ -1,0 +1,49 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  username String @id @unique
+  email String
+  password String
+  type UserType
+  promotionalEmails Boolean @default(false)
+
+  purchase Purchase[]
+}
+
+model Product {
+  sku Int @id @unique
+  name String
+  discription String
+  price Decimal @db.Decimal(7, 2)
+  discount Decimal? @db.Decimal(7, 2)
+
+  Purchase Purchase[]
+}
+
+model Purchase {
+  id Int @id @default(autoincrement())
+
+  username String
+  user User @relation(fields: [username], references: [username], onDelete: Restrict, onUpdate: Cascade)
+
+  products Product[]
+}
+
+enum UserType {
+  customer
+  admin
+  deleted
+}
