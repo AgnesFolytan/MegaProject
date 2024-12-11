@@ -1,17 +1,17 @@
 import { useEffect, useState } from 'react';
 
-type Tablet = {
+type Products = {
   sku: number,
-  name: String,
-  description: String,
+  name: string,
+  description: string,
   price: number,
   discount: number,
-  yarn: String
+  yarn: string
   size: number
 };
 
   export function ListProducts(){
-    const [products, setproducts] = useState<Tablet[]>([]);
+    const [products, setProducts] = useState<Products[]>([]);
     const [errors, setErrors] = useState<string | null>(null);
     useEffect(() => {
         fetch("http://localhost:3000/crochetPlushies")
@@ -21,7 +21,7 @@ type Tablet = {
                 }
                 return response.json();
             })
-            .then((data) => setproducts(data.data))
+            .then((data) => setProducts(data.data))
             .catch((err) => setErrors(err.message));
     }, []);
 
