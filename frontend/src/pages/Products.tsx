@@ -14,20 +14,18 @@ type Products = {
     const [products, setProducts] = useState<Products[]>([]);
     const [errors, setErrors] = useState<string | null>(null);
     useEffect(() => {
-        fetch("http://localhost:3000/products")
-            .then((response) => {
-                if (!response.ok) {
-                    throw new Error(`HTTP error! Status: ${response.status}`);
-                }
-                return response.json();
-            })
-            .then((data) => setProducts(data.data))
+        fetching()
             .catch((err) => setErrors(err.message));
     }, []);
 
     if (errors) {
         return <p>{errors}</p>;
     }
+
+  async function fetching(){
+    const res = await fetch("http://localhost:3000/products")
+    setProducts(await res.json());
+  }
 
     
   return (

@@ -2,21 +2,53 @@ import { Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { PrismaService } from 'src/prisma.service';
-import { AuthService } from 'src/auth/auth.service';
+import * as argon2 from 'argon2';
+import { LoginDto } from './dto/login-dto';
+import { randomBytes } from 'crypto';
 
 @Injectable()
 export class UsersService {
-  constructor(
-    private readonly db: PrismaService,
-    private readonly auth: AuthService
-  ) {}
+  constructor(private readonly db: PrismaService) { }
 
-  create(createUserDto: CreateUserDto) {
-    return this.auth.signUp(createUserDto);
+  async create(createUserDto: CreateUserDto) {
+    const hashedPw = await argon2.hash(createUserDto.password);
+    const newUser = await this.db.user.create({
+      data: {
+        ...createUserDto,
+        password: hashedPw,
+      }
+    });
+    delete newUser.password;
+    return newUser;
+  }
+
+  async login(loginData: LoginDto) {
+    const user = await this.db.user.findUniqueOrThrow({
+      where: {
+        email: loginData.email
+      }
+    });
+    if (await argon2.verify(await user.password, loginData.password)) {
+      const token = randomBytes(32).toString('hex');
+      await this.db.token.create({
+        data: {
+          token,
+          user: {
+            connect: { id: user.id }
+          }
+        }
+      });
+      return {
+        token: token,
+        userId: user.id
+      };
+    } else {
+      throw new Error('Invalid password');
+    }
   }
 
   findAll() {
-    return this.db.user.findMany();
+    return `This action returns all users`;
   }
 
   findOne(id: number) {
@@ -29,5 +61,18 @@ export class UsersService {
 
   remove(id: number) {
     return `This action removes a #${id} user`;
+  }
+
+  async findUserByToken(token: string){
+    const tokenData = await this.db.token.findUniqueOrThrow({
+      where: {token}, include: {user: true}
+    })
+    if (!tokenData){
+      return null;
+    }
+    const user = tokenData.user;
+    delete user.password;
+
+    return user;
   }
 }

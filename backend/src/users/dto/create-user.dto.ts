@@ -1,24 +1,8 @@
-import { UserType } from "@prisma/client";
-import { IsBoolean, IsEnum, IsNotEmpty, IsOptional, IsString } from "class-validator";
+import { IsEmail, IsStrongPassword } from "class-validator";
 
 export class CreateUserDto {
-  @IsString()
-  @IsNotEmpty()
-  username: string;
-
-  @IsString()
-  @IsNotEmpty()
+  @IsEmail()
   email: string;
-
-  @IsString()
-  @IsNotEmpty()
+  @IsStrongPassword()
   password: string;
-
-  @IsEnum(UserType)
-  @IsNotEmpty()
-  type: UserType;
-
-  @IsBoolean()
-  @IsOptional()
-  promotionalEmails?: boolean;
 }

@@ -1,8 +1,8 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UnauthorizedException } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { AuthGuard } from 'src/auth/auth.guard';
+import { LoginDto } from './dto/login-dto';
 
 @Controller('users')
 export class UsersController {
@@ -13,7 +13,15 @@ export class UsersController {
     return this.usersService.create(createUserDto);
   }
 
-  //@UseGuards(AuthGuard)
+  @Post('login')
+  async login(@Body() loginData: LoginDto) {
+    try {
+      return await this.usersService.login(loginData);
+    } catch {
+      throw new UnauthorizedException("Érvénytelen név v. jelszó!")
+    }
+  }
+
   @Get()
   findAll() {
     return this.usersService.findAll();
