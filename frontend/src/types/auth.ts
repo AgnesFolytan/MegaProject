@@ -1,15 +1,24 @@
+export enum UserType {
+  customer,
+  admin,
+  deleted
+}
+
 export interface User {
     username: string;
-
+    email: string;
+    userType: UserType;
+    
   }
   
-  export interface Permissions {
+export interface Permissions {
     canManageUsers: boolean;
     canAccessDashboard: boolean;
   }
   
   export interface AuthContextType {
     user: User | null;
-    login: (username: string) => void;
+    permissions: Permissions;
+    login: (username: string, email: string, userType: UserType) => void;
     logout: () => void;
   }

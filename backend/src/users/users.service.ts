@@ -52,12 +52,22 @@ export class UsersService {
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} user`;
+    return this.db.user.findUnique({
+      where: {id}
+    })
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
-  }
+  async update(id: number, updateUserDto: UpdateUserDto) {
+    const hashedPw = await argon2.hash(updateUserDto.password);
+    return this.db.user.update({
+      where: { id },
+      data: {
+        ...updateUserDto,
+        password: hashedPw,
+      },
+    });
+}
+
 
   remove(id: number) {
     return `This action removes a #${id} user`;

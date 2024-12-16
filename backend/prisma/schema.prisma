@@ -67,5 +67,4 @@ enum UserType {
   customer
   admin
   deleted
-  restricted
 }
