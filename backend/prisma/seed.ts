@@ -16,18 +16,24 @@ async function main() {
     });
   }
   
+  const generateDecimal = (lDigits: number, rDigits: number): number => {
+    const integerPart = faker.number.bigInt({ min: 10 ** (lDigits - 1), max: 10 ** lDigits - 1 });
+    const decimalPart = faker.number.bigInt({ min: 10 ** (rDigits - 1), max: 10 ** rDigits - 1 });
+    return parseFloat(`${integerPart}.${decimalPart}`);
+  }
+
   const yarnTypes = Object.values(YarnTypes);
   for (let i = 0; i < 10; i++) {
     await prisma.product.create({
       data: {
-        sku: i + 1,
+        sku: i +1,
         name: faker.commerce.productName(),
         description: faker.commerce.productDescription(),
-        price: new Prisma.Decimal(faker.commerce.price(1, 100, 2)),
-        discount: faker.datatype.boolean() ? new Prisma.Decimal(faker.commerce.price(1, 100, 2)) : null,
+        price: new Prisma.Decimal(generateDecimal(2, 2)),
+        discount: faker.datatype.boolean() ? new Prisma.Decimal(generateDecimal(3, 3)) : null,
         yarn: faker.helpers.arrayElement(yarnTypes),
-        size: new Prisma.Decimal(faker.number.float({ min: 10, max: 500, precision: 0.01 })),
-      },
+        size: new Prisma.Decimal(generateDecimal(3, 2)),
+      }
     });
   }
   
