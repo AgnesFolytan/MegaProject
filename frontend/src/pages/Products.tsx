@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { Card, Col, Row } from 'react-bootstrap';
 import Button from 'react-bootstrap/Button';
 
 type Products = {
@@ -11,62 +12,62 @@ type Products = {
   size: number
 };
 
-  export function ListProducts(){
-    const [products, setProducts] = useState<Products[]>([]);
-    const [errors, setErrors] = useState<string | null>(null);
-    useEffect(() => {
-        fetching()
-            .catch((err) => setErrors(err.message));
-    }, []);
+export function ListProducts() {
+  const [products, setProducts] = useState<Products[]>([]);
+  const [errors, setErrors] = useState<string | null>(null);
+  useEffect(() => {
+    fetching()
+      .catch((err) => setErrors(err.message));
+  }, []);
 
-    if (errors) {
-        return <p>{errors}</p>;
-    }
+  if (errors) {
+    return <p>{errors}</p>;
+  }
 
-  async function fetching(){
+  async function fetching() {
     const res = await fetch("http://localhost:3000/products")
     setProducts(await res.json());
   }
 
-    
+
   return (
     <>
       <h2 className="mb-4">Crochet plushies</h2>
-      <div className="row">
-      {products.map((e) => (
-        <div key={e.sku} className="col-md-4 col-lg-3 mb-4">
-          <div className="card h-100">
-            <div className="card-body">
-              <h5 className="card-title">{e.name}</h5>
-              <ul className="list-group list-group-flush">
-              <li className="list-group-item">
-                    <strong>Price:</strong> 
+      <Row>
+        {products.map((e) => (
+          <Col key={e.sku} md={4} lg={3} className="mb-4">
+            <Card className="h-100">
+              <Card.Body>
+                <Card.Title>{e.name}</Card.Title>
+                <ul className="list-group list-group-flush">
+                  <li className="list-group-item">
+                    <strong>Price:</strong>
                     {e.discount > 0 ? (
                       <>
-                        <span style={{ textDecoration: 'line-through', color: 'red' }}>{e.price} $</span> <span>{e.discount} $</span>
+                        <span style={{ textDecoration: 'line-through', color: 'red' }}>{e.price} $</span>{' '}
+                        <span>{e.discount} $</span>
                       </>
                     ) : (
                       <span>{e.price} $</span>
                     )}
                   </li>
-                <li className="list-group-item">
-                  <strong>Yarn:</strong> {e.yarn}
-                </li>
-                <li className="list-group-item">
-                  <strong>Size:</strong> {e.size} cm
-                </li>
-                <li className="list-group-item">
-                  <strong>Description:</strong> {e.description}
-                </li>
-              </ul>
-              <Button variant='dark'>Add to Cart</Button>
-            </div>
-          </div>
-        </div>
-      ))}
-    </div>
-        </>
-      );
-  }
-
+                  <li className="list-group-item">
+                    <strong>Yarn:</strong> {e.yarn}
+                  </li>
+                  <li className="list-group-item">
+                    <strong>Size:</strong> {e.size} cm
+                  </li>
+                  <li className="list-group-item">
+                    <strong>Description:</strong> {e.description}
+                  </li>
+                </ul>
+                <Button variant="dark">Add to Cart</Button>
+              </Card.Body>
+            </Card>
+          </Col>
+        ))}
+      </Row>
+    </>
+  );
+};
 

@@ -11,21 +11,21 @@ export function NavBar (){
       <Navbar.Collapse id="basic-navbar-nav">
         <Nav className="me-auto">
           <Nav.Link href="/">Kezdőlap</Nav.Link>
-          <Nav.Link href="/">Tabletek Lista</Nav.Link>
-          <Nav.Link href="/">Tabletek Felvétel</Nav.Link>
-          <Nav.Link href="/">Tabletek Törlés</Nav.Link>
-          <Nav.Link href="/">Tabletek Keresés és Rendezés</Nav.Link>
-          <Nav.Link href="/">Tabletek Pagination</Nav.Link>
+          {user?.username != null? (
+            <Nav.Link href="/Cart">Kezdőlap</Nav.Link>
+          ): (
+            <></>
+          )}
           <NavDropdown title="Account" id="account-dropdown">
             {user?.username != null? (
               <>
-                <NavDropdown.Item href="/logout">Logout</NavDropdown.Item>
-                <NavDropdown.Item href="/profile">Profile</NavDropdown.Item>
+                <NavDropdown.Item href="/Logout">Logout</NavDropdown.Item>
+                <NavDropdown.Item href="/Profile">Profile</NavDropdown.Item>
               </>
             ): (
               <>
-              <NavDropdown.Item href="/login">Login</NavDropdown.Item>
-              <NavDropdown.Item href="/register">Register</NavDropdown.Item>
+              <NavDropdown.Item href="/Login">Login</NavDropdown.Item>
+              <NavDropdown.Item href="/Register">Register</NavDropdown.Item>
               </>
             )}
           </NavDropdown>
