@@ -14,13 +14,21 @@ datasource db {
 }
 
 model User {
-  username String @id @unique
-  email String
+  id Int @id @default(autoincrement())
+  username String @unique
+  email String  @unique
   password String
   type UserType
-  promotionalEmails Boolean @default(false)
+  token Token[]
 
   purchase Purchase[]
+}
+
+
+model Token {
+  token String @id
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId Int
 }
 
 model Product {
@@ -53,6 +61,7 @@ enum YarnTypes {
   Velvet
   Wool
 }
+
 
 enum UserType {
   customer

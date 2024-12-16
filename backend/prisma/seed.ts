@@ -11,7 +11,6 @@ async function main() {
         email: faker.internet.email(),
         password: faker.internet.password(),
         type: faker.helpers.arrayElement(Object.values(UserType)),
-        promotionalEmails: faker.datatype.boolean(),
       },
     });
   }
