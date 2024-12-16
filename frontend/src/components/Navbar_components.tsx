@@ -1,6 +1,9 @@
 import { Container, Nav, Navbar, NavDropdown } from 'react-bootstrap';
+import { Context } from '../context/Context';
+import { useContext } from 'react';
 
 export function NavBar (){
+  const { user, login, logout } = useContext(Context);
   return (<><Navbar bg="dark" variant="dark" expand="lg">
     <Container>
       <Navbar.Brand href="/"></Navbar.Brand>
@@ -14,8 +17,17 @@ export function NavBar (){
           <Nav.Link href="/">Tabletek Keresés és Rendezés</Nav.Link>
           <Nav.Link href="/">Tabletek Pagination</Nav.Link>
           <NavDropdown title="Account" id="account-dropdown">
-              <NavDropdown.Item href="#">Login</NavDropdown.Item>
-              <NavDropdown.Item href="#">Register</NavDropdown.Item>
+            {user?.username != null? (
+              <>
+                <NavDropdown.Item href="/logout">Logout</NavDropdown.Item>
+                <NavDropdown.Item href="/profile">Profile</NavDropdown.Item>
+              </>
+            ): (
+              <>
+              <NavDropdown.Item href="/login">Login</NavDropdown.Item>
+              <NavDropdown.Item href="/register">Register</NavDropdown.Item>
+              </>
+            )}
           </NavDropdown>
         </Nav>
       </Navbar.Collapse>

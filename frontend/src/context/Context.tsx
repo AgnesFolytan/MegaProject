@@ -1,7 +1,7 @@
 import React, { createContext, useState, ReactNode } from 'react';
 import { User, AuthContextType } from '../types/auth';
 
-export const AuthContext = createContext<AuthContextType>({
+export const Context = createContext<AuthContextType>({
   user: null,
   login: () => {},
   logout: () => {}
@@ -25,8 +25,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, logout }}>
+    <Context.Provider value={{ user, login, logout }}>
       {children}
-    </AuthContext.Provider>
+    </Context.Provider>
   );
 };
