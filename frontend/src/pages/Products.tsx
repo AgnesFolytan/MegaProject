@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import Button from 'react-bootstrap/Button';
 
 type Products = {
   sku: number,
@@ -42,7 +43,7 @@ type Products = {
                     <strong>Price:</strong> 
                     {e.discount > 0 ? (
                       <>
-                        <span style={{ textDecoration: 'line-through' }}>{e.price} $</span> <span>{e.discount} $</span>
+                        <span style={{ textDecoration: 'line-through', color: 'red' }}>{e.price} $</span> <span>{e.discount} $</span>
                       </>
                     ) : (
                       <span>{e.price} $</span>
@@ -52,12 +53,13 @@ type Products = {
                   <strong>Yarn:</strong> {e.yarn}
                 </li>
                 <li className="list-group-item">
-                  <strong>:</strong> {e.size} cm
+                  <strong>Size:</strong> {e.size} cm
                 </li>
                 <li className="list-group-item">
                   <strong>Description:</strong> {e.description}
                 </li>
               </ul>
+              <Button variant='dark'>Add to Cart</Button>
             </div>
           </div>
         </div>
