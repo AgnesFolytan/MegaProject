@@ -138,7 +138,7 @@ export function ListProducts() {
                       <strong>Description:</strong> {e.description}
                     </li>
                     
-                    {user?.username ? (
+                    {user? (
                       <li className="list-group-item">
                     <Button variant="dark" onClick={() => addToCart(e.sku)}>
                       Add to Cart

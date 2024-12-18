@@ -40,6 +40,8 @@ export function Register() {
       const data = await res.json();
       console.log('Registration successful', data);
 
+       window.location.href = '/'
+
       setUsername('');
       setEmail('');
       setPassword('');

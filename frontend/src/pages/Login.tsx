@@ -34,9 +34,11 @@ export function Login() {
       const data = await res.json();
       console.log('Login successful:', data);
 
-      login(data.username, data.email, data.userType);
+      login(data.username, data.email, data.type);
+      localStorage.setItem("authToken", data.token);
 
-      redirect('/products');
+       window.location.href = '/'
+      
 
       setEmail('');
       setPassword('');

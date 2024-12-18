@@ -5,20 +5,23 @@ export enum UserType {
 }
 
 export interface User {
-    username: string;
-    email: string;
-    userType: UserType;
-    
-  }
-  
+  id: number;
+  username: string;
+  email: string;
+  userType: UserType;
+  token: string;
+
+}
+
 export interface Permissions {
-    canManageUsers: boolean;
-    canAccessDashboard: boolean;
-  }
-  
-  export interface AuthContextType {
-    user: User | null;
-    permissions: Permissions;
-    login: (username: string, email: string, userType: UserType) => void;
-    logout: () => void;
-  }
+  canManageUsers: boolean;
+  canAccessDashboard: boolean;
+}
+
+export interface AuthContextType {
+  user: User | null;
+  permissions: Permissions;
+  login: (username: string, email: string, userType: UserType) => void;
+  validate: () => void;
+  logout: () => void;
+}
