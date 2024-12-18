@@ -39,19 +39,6 @@ async function main() {
   const users = await prisma.user.findMany();
   const products = await prisma.product.findMany();
 
-  for (let i = 0; i < 10; i++) {
-    const randomUser = faker.helpers.arrayElement(users);
-    const randomProducts = faker.helpers.arrayElements(products, faker.number.int({ min: 1, max: 5 }));
-
-    await prisma.purchase.create({
-      data: {
-        username: randomUser.username,
-        products: {
-          connect: randomProducts.map((product) => ({ sku: product.sku })),
-        },
-      },
-    });
-  }
 
   console.log("Seeding finished");
 }

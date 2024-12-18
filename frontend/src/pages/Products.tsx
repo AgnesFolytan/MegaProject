@@ -1,23 +1,33 @@
-import { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Card, Col, Row } from 'react-bootstrap';
 import Button from 'react-bootstrap/Button';
+import { Context } from '../context/Context';
 
-type Products = {
-  sku: number,
-  name: string,
-  description: string,
-  price: number,
-  discount: number,
-  yarn: string
-  size: number
+type Product = {
+  sku: number;
+  name: string;
+  description: string;
+  price: number;
+  discount: number;
+  yarn: string;
+  size: number;
+};
+
+type Cart = {
+  id: number;
+  username: string;
 };
 
 export function ListProducts() {
-  const [products, setProducts] = useState<Products[]>([]);
+  const { user } = useContext(Context);
+  const [products, setProducts] = useState<Product[]>([]);
+  const [carts, setCarts] = useState<Cart[]>([]);
   const [errors, setErrors] = useState<string | null>(null);
+  const [currentCartId, setCurrentCartId] = useState<number | null>(null);
+
   useEffect(() => {
-    fetching()
-      .catch((err) => setErrors(err.message));
+    fetching().catch((err) => setErrors(err.message));
+    fetchUserCart().catch((err) => setErrors(err.message));
   }, []);
 
   if (errors) {
@@ -25,10 +35,64 @@ export function ListProducts() {
   }
 
   async function fetching() {
-    const res = await fetch("http://localhost:3000/products")
+    const res = await fetch("http://localhost:3000/products");
     setProducts(await res.json());
   }
 
+  async function fetchUserCart() {
+    const username: string | undefined = user?.username;
+
+    if (!username) {
+      setErrors("User is not authenticated");
+      return;
+    }
+
+    const res = await fetch("http://localhost:3000/cart");
+    const allCarts: Cart[] = await res.json();
+    setCarts(allCarts);
+
+    const userCart = allCarts.find((cart) => cart.username === username);
+
+    if (userCart) {
+      setCurrentCartId(userCart.id);
+    } else {
+      const createCartRes = await fetch('http://localhost:3000/cart', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ username }),
+      });
+
+      const newCart: Cart = await createCartRes.json();
+      setCarts([...allCarts, newCart]);
+      setCurrentCartId(newCart.id);
+    }
+  }
+
+  const addToCart = async (productId: number) => {
+    if (!currentCartId) {
+      setErrors("No cart available");
+      return;
+    }
+
+    const res = await fetch(`http://localhost:3000/cart/${currentCartId}/product/${productId}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ currentCartId, productId }),
+    });
+
+    if (!res.ok) {
+      const errorData = await res.json();
+      setErrors(errorData.message);
+      return;
+    }
+
+    const data = await res.json();
+    console.log('Product added to cart successfully', data);
+  };
 
   return (
     <>
@@ -61,7 +125,11 @@ export function ListProducts() {
                     <strong>Description:</strong> {e.description}
                   </li>
                 </ul>
-                <Button variant="dark">Add to Cart</Button>
+                {user?.username ? (
+                  <Button variant="dark" onClick={() => addToCart(e.sku)}>Add to Cart</Button>
+                ) : (
+                  <></>
+                )}
               </Card.Body>
             </Card>
           </Col>
@@ -69,5 +137,4 @@ export function ListProducts() {
       </Row>
     </>
   );
-};
-
+}

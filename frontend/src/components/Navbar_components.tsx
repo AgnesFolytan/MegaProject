@@ -3,7 +3,7 @@ import { Context } from '../context/Context';
 import { useContext } from 'react';
 
 export function NavBar (){
-  const { user, login, logout } = useContext(Context);
+  const { user } = useContext(Context);
   return (<><Navbar bg="dark" variant="dark" expand="lg">
     <Container>
       <Navbar.Brand href="/"></Navbar.Brand>

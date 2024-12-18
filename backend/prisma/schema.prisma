@@ -14,41 +14,38 @@ datasource db {
 }
 
 model User {
-  id Int @id @default(autoincrement())
-  username String @unique
-  email String  @unique
+  id       Int      @id @default(autoincrement())
+  username String   @unique
+  email    String   @unique
   password String
-  type UserType
-  token Token[]
+  type     UserType
+  token    Token[]
 
-  purchase Purchase[]
+  Cart Cart[]
 }
 
-
 model Token {
-  token String @id
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  token  String @id
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId Int
 }
 
 model Product {
-  sku Int @id @unique
-  name String
+  sku         Int       @id @unique
+  name        String
   description String
-  price Decimal @db.Decimal(7, 2)
-  discount Decimal? @db.Decimal(7, 2)
-  yarn YarnTypes
-  size Decimal @db.Decimal(7, 2)
+  price       Decimal   @db.Decimal(7, 2)
+  discount    Decimal?  @db.Decimal(7, 2)
+  yarn        YarnTypes
+  size        Decimal   @db.Decimal(7, 2)
 
-  Purchase Purchase[]
+  Cart Cart[]
 }
 
-model Purchase {
-  id Int @id @default(autoincrement())
-
+model Cart {
+  id       Int       @id @default(autoincrement())
   username String
-  user User @relation(fields: [username], references: [username], onDelete: Restrict, onUpdate: Cascade)
-
+  user     User      @relation(fields: [username], references: [username], onDelete: Restrict, onUpdate: Cascade)
   products Product[]
 }
 
@@ -61,7 +58,6 @@ enum YarnTypes {
   Velvet
   Wool
 }
-
 
 enum UserType {
   customer
