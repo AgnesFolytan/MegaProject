@@ -144,7 +144,7 @@ export function Cart() {
         if (currentCartId === null) return;
 
         try {
-            const res = await fetch(`http://localhost:3000/cart/${currentCartId}/product`, {
+            const res = await fetch(`http://localhost:3000/cart/${currentCartId}/products`, {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json',
