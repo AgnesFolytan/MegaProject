@@ -34,7 +34,6 @@ export function Login() {
       const data = await res.json();
       console.log('Login successful:', data);
 
-      localStorage.setItem('authToken', data.token);
       login(data.username, data.email, data.userType);
 
       redirect('/products');

@@ -70,11 +70,6 @@ export function Cart() {
     }
 
     const deleteFromCart = async (productId: number) => {
-        if (!currentCartId) {
-          setErrors("No cart available");
-          return;
-        }
-    
         const res = await fetch(`http://localhost:3000/cart/${currentCartId}/product/${productId}`, {
           method: 'DELETE',
           headers: {

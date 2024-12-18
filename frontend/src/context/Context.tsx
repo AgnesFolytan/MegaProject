@@ -7,8 +7,8 @@ export const Context = createContext<AuthContextType>({
     canManageUsers: false,
     canAccessDashboard: false
   },
-  login: () => {},
-  logout: () => {}
+  login: () => { },
+  logout: () => { }
 });
 
 interface AuthProviderProps {

@@ -6,6 +6,7 @@ import * as argon2 from 'argon2';
 import { LoginDto } from './dto/login-dto';
 import { randomBytes } from 'crypto';
 import { UserType } from '@prisma/client';
+import { emit } from 'process';
 
 @Injectable()
 export class UsersService {
@@ -41,6 +42,9 @@ export class UsersService {
         }
       });
       return {
+        username: user.username,
+        email: user.email,
+        type: user.type,
         token: token,
         userId: user.id
       };
@@ -72,7 +76,9 @@ export class UsersService {
 
 
   remove(id: number) {
-    return `This action removes a #${id} user`;
+    return this.db.user.delete({
+      where: {id}
+    });
   }
 
   async findUserByToken(token: string){

@@ -47,6 +47,25 @@ export function Profile() {
         return <p>{errors}</p>;
     }
 
+    const deleteUser = async() =>{
+        const res = await fetch(`http://localhost:3000/users`, {
+            method: 'DELETE',
+            headers: {
+              'Content-Type': 'application/json',
+            }
+          });
+      
+          if (!res.ok) {
+            const errorData = await res.json();
+            setErrors(errorData.message);
+            return;
+          }
+      
+          const data = await res.json();
+          user?.userType == UserType.deleted;
+          console.log('Product deleted from cart', data);
+    }
+
     const currentUser = users.find((e) => e.username === user?.username);
 
     return (
@@ -75,6 +94,7 @@ export function Profile() {
                             </>
                         )}
                     </ul>
+                    <Button variant="dark" onClick={() => deleteUser()}>Delete</Button>
                 </Card.Body>
             </Card>
 
