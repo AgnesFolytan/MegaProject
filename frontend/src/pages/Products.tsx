@@ -18,17 +18,31 @@ type Cart = {
   username: string;
 };
 
+type User = {
+  username: string;
+  token: string;
+};
+
 export function ListProducts() {
   const { user } = useContext(Context);
   const [products, setProducts] = useState<Product[]>([]);
   const [carts, setCarts] = useState<Cart[]>([]);
   const [errors, setErrors] = useState<string | null>(null);
   const [currentCartId, setCurrentCartId] = useState<number | null>(null);
+  const [userByToken, setUserByToken] = useState<User | null>(null);
 
   useEffect(() => {
+    if (user?.token) {
+      fetchUserByToken(user.token).catch((err) => setErrors(err.message));
+    }
     fetching().catch((err) => setErrors(err.message));
-    fetchUserCart().catch((err) => setErrors(err.message));
-  }, []);
+  }, [user]);
+
+  useEffect(() => {
+    if (userByToken) {
+      fetchUserCart().catch((err) => setErrors(err.message));
+    }
+  }, [userByToken]);
 
   async function fetching() {
     try {
@@ -43,17 +57,32 @@ export function ListProducts() {
     }
   }
 
-  async function fetchUserCart() {
-    const username: string | undefined = user?.username;
+  async function fetchUserByToken(token: string) {
+    try {
+      console.log('Fetching user with token:', token);
+      const res = await fetch(`http://localhost:3000/users/${token}`);
+      if (!res.ok) throw new Error('Failed to fetch user');
+      const userData = await res.json();
+      console.log('User data fetched:', userData);
+      setUserByToken(userData);
+    } catch (err: any) {
+      setErrors('Error fetching user: ' + err.message);
+    }
+  }
 
+  async function fetchUserCart() {
+    const username: string | undefined = userByToken?.username;
     if (!username) return;
 
     try {
+      console.log('Fetching cart for user:', username);
       const res = await fetch('http://localhost:3000/cart');
-      const allCarts: Cart[] = await res.json();
+      if (!res.ok) throw new Error('Failed to fetch cart');
+      const allCarts = await res.json();
+      console.log('Carts fetched:', allCarts);
       setCarts(allCarts);
 
-      const userCart = allCarts.find((cart) => cart.username === username);
+      const userCart = allCarts.find((cart: Cart) => cart.username === username);
 
       if (userCart) {
         setCurrentCartId(userCart.id);
@@ -66,7 +95,8 @@ export function ListProducts() {
           body: JSON.stringify({ username }),
         });
 
-        const newCart: Cart = await createCartRes.json();
+        if (!createCartRes.ok) throw new Error('Failed to create cart');
+        const newCart = await createCartRes.json();
         setCarts([...allCarts, newCart]);
         setCurrentCartId(newCart.id);
       }
@@ -137,15 +167,16 @@ export function ListProducts() {
                     <li className="list-group-item">
                       <strong>Description:</strong> {e.description}
                     </li>
-                    
-                    {user? (
+                    {user ? (
                       <li className="list-group-item">
-                    <Button variant="dark" onClick={() => addToCart(e.sku)}>
-                      Add to Cart
-                    </Button></li>
-                  ): (<></>)}
+                        <Button variant="dark" onClick={() => addToCart(e.sku)}>
+                          Add to Cart
+                        </Button>
+                      </li>
+                    ) : (
+                      <></>
+                    )}
                   </ul>
-                  
                 </Card.Body>
               </Card>
             </Col>

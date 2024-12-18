@@ -37,7 +37,7 @@ export function Cart() {
     useEffect(() => {
         if (token) {
             fetchUserByToken(token).catch((err) => setErrors(err.message));
-        }
+        }   
     }, [token]);
 
     useEffect(() => {
@@ -85,7 +85,7 @@ export function Cart() {
             const res = await fetch("http://localhost:3000/cart");
             if (!res.ok) throw new Error('Failed to fetch cart');
             const allCarts = await res.json();
-            console.log('Carts fetched:', allCarts); // Debugging
+            console.log('Carts fetched:', allCarts);
             setCarts(allCarts);
 
             const userCart = allCarts.find((cart: Cart) => cart.username === username);
