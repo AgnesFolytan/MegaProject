@@ -9,7 +9,7 @@ export function Logout() {
     logout();
     useEffect(() => {
         const timer = setTimeout(() => {
-            redirect('/products');
+            window.location.href = '/';
         }, 60000);
 
         return () => clearTimeout(timer);
@@ -22,7 +22,7 @@ export function Logout() {
                     <h1>Logged Out</h1>
                     <p>You have been logged out successfully.</p>
                     <p>Returning to products page in 1 minute...</p>
-                    <Button variant="primary" onClick={() => redirect('/products')}>
+                    <Button variant="primary" onClick={() => window.location.href = '/'}>
                         Return to Products
                     </Button>
                 </Col>

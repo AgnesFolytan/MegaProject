@@ -8,12 +8,14 @@ import { Login } from './pages/Login.tsx';
 import { Register } from './pages/Register.tsx';
 import { Cart } from './pages/Cart.tsx';
 import { Profile } from './pages/Profile.tsx';
+import { AuthProvider } from './context/Context.tsx';
+import { Logout } from './pages/Logout.tsx';
 
 
 const router = createBrowserRouter([
   {path: "/", element: <ListProducts/>},
   {path: "/Cart", element: <Cart/>},
-  {path: "/Logout", element: <ListProducts />},
+  {path: "/Logout", element: <Logout />},
   {path: "/Profile", element: <Profile />},
   {path: "/Login", element: <Login />},
   {path: "/Register", element: <Register/>}
@@ -21,7 +23,9 @@ const router = createBrowserRouter([
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
+    <AuthProvider>
     <NavBar />
     <RouterProvider router={router}></RouterProvider>
+    </AuthProvider>
   </StrictMode>,
 )

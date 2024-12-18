@@ -13,7 +13,9 @@ export class CartService {
     })
   }
   findAll() {
-    return this.db.cart.findMany();
+    return this.db.cart.findMany({
+      include: {products: true}
+    });
   }
 
   addProduct(cartid: number, productsku: number) {

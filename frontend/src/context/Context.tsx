@@ -1,6 +1,6 @@
 import React, { createContext, useState, ReactNode, useEffect } from 'react';
 import { User, Permissions, AuthContextType, UserType } from '../types/auth';
-import { useNavigate } from 'react-router';
+import {  } from 'react-router';
 export const Context = createContext<AuthContextType>({
   user: null,
   permissions: {
@@ -24,7 +24,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   });
   const [isLoggedOut, setIsLoggedOut] = useState(false);
   const [isValidating, setIsValidating] = useState(false);
-  const navigate = useNavigate();
+  
 
   useEffect(() => {
     const loadToken = async () => {
@@ -63,35 +63,30 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     loadToken();
   }, [isLoggedOut]);
 
-  const login = async (email: string) => {
+  const login = async (email: string, password: string) => {
     try {
       const response = await fetch('http://localhost:3000/users/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email }),
+        body: JSON.stringify({ email, password }),
       });
 
-      if (!response.ok) throw new Error('Login failed');
 
       const data = await response.json();
-      const { token, username, email: userEmail, userType, userId } = data;
+      console.log(data)
+      setUser(data);
 
-      setUser({
-        id: userId,
-        token,
-        username,
-        email: userEmail,
-        userType,
-      });
+      localStorage.setItem("authToken", data.token);
+
+      await validate();
 
       setPermissions({
-        canManageUsers: userType === UserType.admin,
-        canAccessDashboard: userType === UserType.admin,
+        canManageUsers: data.userType === UserType.admin,
+        canAccessDashboard: data.userType === UserType.admin,
       });
 
-      localStorage.setItem('authToken', token);
+      localStorage.setItem('authToken', data.token);
 
-      navigate('/account');
     } catch (error: any) {
       console.error('Login error:', error);
       alert(error.message);
@@ -112,8 +107,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       });
 
       if (!response.ok) throw new Error('Validation failed');
-
+      console.log("hi")
       const data = await response.json();
+      console.log(data.token)
       setUser({
         id: data.id,
         username: data.userName,
@@ -126,7 +122,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         canAccessDashboard: data.userType === UserType.admin,
       });
     } catch (error) {
-      console.error('Validation error:', error);
+      console.log('Validation error:' + error);
       localStorage.removeItem('authToken');
       setUser(null);
     } finally {
@@ -142,7 +138,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       canAccessDashboard: false,
     });
     localStorage.removeItem('authToken');
-    navigate('/login');
+    
   };
 
   return (

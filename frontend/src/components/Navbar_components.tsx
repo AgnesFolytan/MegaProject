@@ -4,6 +4,7 @@ import { useContext } from 'react';
 
 export function NavBar (){
   const { user } = useContext(Context);
+  const loggedin = !!user?.token;
   console.log(user);
   return (<><Navbar bg='dark' sticky='top' variant="dark" expand="lg">
     <Container>
@@ -13,13 +14,13 @@ export function NavBar (){
         <Nav className="me-auto">
           <Nav.Link href="/">Home</Nav.Link>
           
-          {user? (
+          {loggedin? (
             <Nav.Link href="/Cart">Cart</Nav.Link>
           ): (
             <></>
           )}
           <NavDropdown title="Account" id="account-dropdown">
-            {user? (
+            {loggedin? (
               <>
                 <NavDropdown.Item href="/Logout">Logout</NavDropdown.Item>
                 <NavDropdown.Item href="/Profile">Profile</NavDropdown.Item>

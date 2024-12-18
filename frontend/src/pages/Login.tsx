@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Form, Button, Alert, Spinner, Container, Row, Col } from 'react-bootstrap'; import { Context } from '../context/Context';
 import { redirect } from 'react-router-dom';
 
@@ -15,30 +15,7 @@ export function Login() {
     setIsSubmitting(true);
 
     try {
-      const res = await fetch('http://localhost:3000/users/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email, password }),
-      });
-
-      if (!res.ok) {
-        const errorData = await res.json();
-        console.error("Login error response:", errorData);
-        setError(errorData.message || 'Failed to login');
-        setIsSubmitting(false);
-        return;
-      }
-
-      const data = await res.json();
-      console.log('Login successful:', data);
-
-      login(data.username, data.email, data.type);
-      localStorage.setItem("authToken", data.token);
-
-       window.location.href = '/'
-      
+      login(email, password)
 
       setEmail('');
       setPassword('');
@@ -50,6 +27,13 @@ export function Login() {
       setError('An error occurred: ' + e.message);
       setIsSubmitting(false);
     }
+
+    useEffect(() => {
+      const timer = setTimeout(() => {
+        window.location.href = '/';
+      }, 10);
+      return () => clearTimeout(timer);
+    },);
   };
 
   return (
