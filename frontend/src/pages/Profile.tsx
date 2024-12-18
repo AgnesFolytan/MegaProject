@@ -55,6 +55,7 @@ export function Profile() {
 
         if (fieldName && newValue !== null && newValue !== '') {
             const updatedUser = { [fieldName]: newValue };
+            console.log(updatedUser);
             try {
                 const res = await fetch(`http://localhost:3000/users/${id}`, {
                     method: "PATCH",

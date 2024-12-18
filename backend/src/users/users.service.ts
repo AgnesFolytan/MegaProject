@@ -59,33 +59,42 @@ export class UsersService {
 
   findOne(id: number) {
     return this.db.user.findUnique({
-      where: {id}
+      where: { id }
     })
   }
 
   async update(id: number, updateUserDto: UpdateUserDto) {
-    const hashedPw = await argon2.hash(updateUserDto.password);
-    return this.db.user.update({
-      where: { id },
-      data: {
-        ...updateUserDto,
-        password: hashedPw,
-      },
-    });
-}
+    if (updateUserDto.password) {
+      const hashedPw = await argon2.hash(updateUserDto.password);
+      return this.db.user.update({
+        where: { id },
+        data: {
+          ...updateUserDto,
+          password: hashedPw,
+        },
+      });
+    } else {
+      return this.db.user.update({
+        where: { id },
+        data: {
+          ...updateUserDto
+        },
+      });
+    }
+  }
 
 
   remove(id: number) {
     return this.db.user.delete({
-      where: {id}
+      where: { id }
     });
   }
 
-  async findUserByToken(token: string){
+  async findUserByToken(token: string) {
     const tokenData = await this.db.token.findUniqueOrThrow({
-      where: {token}, include: {user: true}
+      where: { token }, include: { user: true }
     })
-    if (!tokenData){
+    if (!tokenData) {
       return null;
     }
     const user = tokenData.user;
