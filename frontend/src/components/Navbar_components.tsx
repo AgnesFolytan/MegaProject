@@ -4,7 +4,7 @@ import { useContext } from 'react';
 
 export function NavBar (){
   const { user } = useContext(Context);
-  return (<><Navbar bg="dark" variant="dark" expand="lg">
+  return (<><Navbar bg='dark' sticky='top' variant="dark" expand="lg">
     <Container>
       <Navbar.Brand href="/"></Navbar.Brand>
       <Navbar.Toggle aria-controls="basic-navbar-nav" />

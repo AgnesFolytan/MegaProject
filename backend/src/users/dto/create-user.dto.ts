@@ -11,10 +11,16 @@ export class CreateUserDto {
   email: string;
 
   @IsNotEmpty()
-  @IsStrongPassword()
+  /*@IsStrongPassword({
+    minLength: 10, 
+    minLowercase: 2,
+    minUppercase: 1,
+    minNumbers: 1,
+    minSymbols: 1
+  })*/
   password: string;
 
   @IsNotEmpty()
   @IsEnum(UserType)
-  type: UserType;
+  type: UserType = UserType.customer;
 }

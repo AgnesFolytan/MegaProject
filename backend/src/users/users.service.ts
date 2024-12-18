@@ -5,6 +5,7 @@ import { PrismaService } from 'src/prisma.service';
 import * as argon2 from 'argon2';
 import { LoginDto } from './dto/login-dto';
 import { randomBytes } from 'crypto';
+import { UserType } from '@prisma/client';
 
 @Injectable()
 export class UsersService {
@@ -16,6 +17,7 @@ export class UsersService {
       data: {
         ...createUserDto,
         password: hashedPw,
+        type: createUserDto.type || UserType.customer,
       }
     });
     delete newUser.password;
